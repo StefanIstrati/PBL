@@ -1,0 +1,201 @@
+[
+    {
+        "type": "Teacher",
+        "data": {
+            "name": "Mr. Smith",
+            "courses": [
+                [
+                    "Numerical Analysis",
+                    "Seminar"
+                ],
+                [
+                    "Numerical Analysis",
+                    "Course"
+                ]
+            ],
+            "language": "Romanian"
+        }
+    },
+    {
+        "type": "Teacher",
+        "data": {
+            "name": "Mr. Brown",
+            "courses": [
+                [
+                    "Computer Science",
+                    "Course"
+                ],
+                [
+                    "Computer Science",
+                    "Laboratory"
+                ]
+            ],
+            "language": "Romanian"
+        }
+    },
+    {
+        "type": "Teacher",
+        "data": {
+            "name": "Mr. Tronciu",
+            "courses": [
+                [
+                    "Physics",
+                    "Course"
+                ]
+            ],
+            "language": "Romanian"
+        }
+    },
+    {
+        "type": "Teacher",
+        "data": {
+            "name": "Mr. Jonhson",
+            "courses": [
+                [
+                    "Physics",
+                    "Course"
+                ],
+                [
+                    "Physics",
+                    "Seminar"
+                ],
+                [
+                    "Physics",
+                    "Laboratory"
+                ]
+            ],
+            "language": "Romanian"
+        }
+    },
+    {
+        "type": "Course",
+        "data": {
+            "name": "Computer Science",
+            "course_type": "Laboratory"
+        }
+    },
+    {
+        "type": "Course",
+        "data": {
+            "name": "Numerical Analysis",
+            "course_type": "Seminar"
+        }
+    },
+    {
+        "type": "Course",
+        "data": {
+            "name": "Physics",
+            "course_type": "Laboratory"
+        }
+    },
+    {
+        "type": "Course",
+        "data": {
+            "name": "Physics",
+            "course_type": "Seminar"
+        }
+    },
+    {
+        "type": "Course",
+        "data": {
+            "name": "Physics",
+            "course_type": "Course"
+        }
+    },
+    {
+        "type": "Course",
+        "data": {
+            "name": "Numerical Analysis",
+            "course_type": "Course"
+        }
+    },
+    {
+        "type": "Group",
+        "data": {
+            "name": "Group A",
+            "courses": [
+                [
+                    "Computer Science",
+                    "Laboratory",
+                    2
+                ],
+                [
+                    "Numerical Analysis",
+                    "Course",
+                    1
+                ],
+                [
+                    "Physics",
+                    "Seminar",
+                    2
+                ],
+                [
+                    "Physics",
+                    "Course",
+                    2
+                ],
+                [
+                    "Physics",
+                    "Laboratory",
+                    1
+                ]
+            ],
+            "language": "Romanian"
+        }
+    },
+    {
+        "type": "Group",
+        "data": {
+            "name": "Group B",
+            "courses": [
+                [
+                    "Computer Science",
+                    "Laboratory",
+                    2
+                ],
+                [
+                    "Numerical Analysis",
+                    "Seminar",
+                    2
+                ],
+                [
+                    "Physics",
+                    "Course",
+                    2
+                ],
+                [
+                    "Physics",
+                    "Seminar",
+                    1
+                ],
+                [
+                    "Physics",
+                    "Laboratory",
+                    1
+                ]
+            ],
+            "language": "Romanian"
+        }
+    },
+    {
+        "type": "Office",
+        "data": {
+            "name": "Office A",
+            "office_type": "Course"
+        }
+    },
+    {
+        "type": "Office",
+        "data": {
+            "name": "Office B",
+            "office_type": "Seminar"
+        }
+    },
+    {
+        "type": "Office",
+        "data": {
+            "name": "Office C",
+            "office_type": "Laboratory"
+        }
+    }
+]
