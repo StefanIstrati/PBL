@@ -45,7 +45,7 @@ def create_list_of_tuples(teachers, courses, groups, offices):
                 if eligible_teachers:
                     eligible_teachers.sort(key=lambda teacher: classes_taught[teacher.name])
                     teacher = eligible_teachers[0]
-                    classes_taught[teacher.name] += group_course[2]
+                    classes_taught[teacher.name] += int(group_course[2])
                     if course.course_type in offices_by_type:
                         office_list = offices_by_type[course.course_type]
                         office_index = office_counters[course.course_type] % len(office_list)
@@ -78,13 +78,21 @@ def greedy_coloring(G):
             clr += 1
         colors[node] = clr
     return colors
+def create_graph_and_apply_coloring(json_file):
+    teachers, courses, groups, offices = load_data_from_json(json_file)
+    tuples_list = create_list_of_tuples(teachers, courses, groups, offices)
+    G = nx.Graph()
+    for class1 in tuples_list:
+        for class2 in tuples_list:
+            if class1 != class2 and are_conflicting(class1, class2):
+                G.add_edge(class1, class2)
+    colors = greedy_coloring(G)
+    return G, colors
 
 if __name__ == "__main__":
     json_file = "file_1.json"
     teachers, courses, groups, offices = load_data_from_json(json_file)
     tuples_list = create_list_of_tuples(teachers, courses, groups, offices)
-    for tuples in tuples_list:
-        print(tuples)
     graph = {class_session: [] for class_session in tuples_list}
     G = nx.Graph()
     for class1 in tuples_list:
