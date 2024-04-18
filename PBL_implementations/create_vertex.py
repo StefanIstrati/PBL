@@ -2,7 +2,6 @@ import json
 import networkx as nx
 import matplotlib.pyplot as plt
 from classes import Teacher, Course, Group, Offices
-
 def load_data_from_json(file_path):
     with open(file_path, 'r') as file:
         data = json.load(file)
@@ -21,46 +20,42 @@ def load_data_from_json(file_path):
             office_data = entry['data']
             offices.append(Offices(office_data['name'], office_data['office_type']))
     return teachers, courses, groups, offices
-
 def create_list_of_tuples(teachers, courses, groups, offices):
-    classes_taught = {teacher.name: 0 for teacher in teachers}
-    result = []
-    
-    # Organize offices by type
-    offices_by_type = {}
+    """Create a list of tuples associating teachers, courses, groups, and offices."""
+    tuples_list = []
+
+    # Mapping courses to teachers based on compatibility
+    teacher_course_map = {}
+    for teacher in teachers:
+        for course_name, course_type in teacher.courses:
+            if (course_name, course_type, teacher.language) not in teacher_course_map:
+                teacher_course_map[(course_name, course_type, teacher.language)] = []
+            teacher_course_map[(course_name, course_type, teacher.language)].append(teacher)
+
+    # Mapping offices to office types
+    office_course_map = {}
     for office in offices:
-        if office.office_type not in offices_by_type:
-            offices_by_type[office.office_type] = [office]
-        else:
-            offices_by_type[office.office_type].append(office)
-    
-    # Round-robin counters for each office type
-    office_counters = {office_type: 0 for office_type in offices_by_type}
+        if office.office_type not in office_course_map:
+            office_course_map[office.office_type] = []
+        office_course_map[office.office_type].append(office)
 
+    # Associating groups with courses and suitable teachers and offices
     for group in groups:
-        for group_course in group.courses:
-            course = next((c for c in courses if c.name == group_course[0] and c.course_type == group_course[1]), None)
-            if course:
-                eligible_teachers = [teacher for teacher in teachers if (course.name, course.course_type) in teacher.courses]
-                if eligible_teachers:
-                    eligible_teachers.sort(key=lambda teacher: classes_taught[teacher.name])
-                    teacher = eligible_teachers[0]
-                    classes_taught[teacher.name] += group_course[2]
-                    if course.course_type in offices_by_type:
-                        office_list = offices_by_type[course.course_type]
-                        office_index = office_counters[course.course_type] % len(office_list)
-                        office = office_list[office_index]
-                        office_counters[course.course_type] += 1
-                    else:
-                        office = None 
-                    if office and teacher.language == group.language:
-                        result.append((group.name, course.name, course.course_type, teacher.name, office.name, group_course[2], group.language))
-    return result
+        for course_name, course_type, frequency in group.courses:
+            eligible_teachers = teacher_course_map.get((course_name, course_type, group.language), [])
+            eligible_offices = office_course_map.get(course_type, [])
 
+            for teacher in eligible_teachers:
+                for office in eligible_offices:
+                    tuples_list.append((group.name, course_name, teacher.name, office.name, frequency))
+
+    return tuples_list
 
 def are_conflicting(class1, class2):
+    if (class1[1] == class2[1] and class1[2] == "Curs" and class2[2] == "Curs" and
+            class1[3] == class2[3] and class1[4] == class2[4] and class1[6] == class2[6]):
+        return False
     return class1[3] == class2[3] or class1[4] == class2[4] or class1[0] == class2[0]
-
 def greedy_coloring(G):
     colors = {node: -1 for node in G.nodes()}
     available = [False] * G.number_of_nodes()
@@ -78,7 +73,16 @@ def greedy_coloring(G):
             clr += 1
         colors[node] = clr
     return colors
-
+def create_graph_and_apply_coloring(json_file):
+    teachers, courses, groups, offices = load_data_from_json(json_file)
+    tuples_list = create_list_of_tuples(teachers, courses, groups, offices)
+    G = nx.Graph()
+    for class1 in tuples_list:
+        for class2 in tuples_list:
+            if class1 != class2 and are_conflicting(class1, class2):
+                G.add_edge(class1, class2)
+    colors = greedy_coloring(G)
+    return G, colors
 if __name__ == "__main__":
     json_file = "file_1.json"
     teachers, courses, groups, offices = load_data_from_json(json_file)
@@ -92,9 +96,9 @@ if __name__ == "__main__":
             if class1 != class2 and are_conflicting(class1, class2):
                 G.add_edge(class1, class2)
     colors = greedy_coloring(G)
-    plt.figure(figsize=(12, 8))
-    pos = nx.spring_layout(G, seed=42)
+    plt.figure(figsize=(300, 160))
+    pos = nx.spring_layout(G, seed=100)
     color_map = [colors[node] for node in G.nodes()]
-    nx.draw(G, pos, with_labels=True, labels={node: f"{node[1][:3]}.. ({node[0]})" for node in G.nodes()}, node_size=3000, node_color=color_map, font_size=10, edge_color="gray", cmap=plt.cm.Paired)
+    nx.draw(G, pos, with_labels=True, labels={node: f"{node[1][:3]}.. ({node[0]})" for node in G.nodes()}, node_size=1000, node_color=color_map, font_size=5, edge_color="gray", cmap=plt.cm.Paired)
     plt.title("Graphical Representation of Class Sessions and Conflicts with Coloring")
     plt.show()

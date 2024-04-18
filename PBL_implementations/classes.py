@@ -1,4 +1,3 @@
-# classes.py
 class Teacher:
     def __init__(self, name, courses, language):
         self.name = name
